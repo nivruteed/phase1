@@ -3,8 +3,13 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'myweb';
+  title = 'myweb'; // Add this line
+  currentComponent: string = 'login';
+
+  showComponent(component: string) {
+    this.currentComponent = component;
+  }
 }

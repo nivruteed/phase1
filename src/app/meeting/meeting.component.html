@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Meeting</title>
+    <link rel="stylesheet" href="meeting.component.css">
+</head>
+<body>
+    <div class="meeting-container">
+        <h2>Create a Meeting Schedule</h2>
+        <form (ngSubmit)="createMeeting()">
+          <input type="text" [(ngModel)]="topic" name="topic" placeholder="Meeting Topic" required>
+          <input type="number" [(ngModel)]="numberOfPeople" name="numberOfPeople" placeholder="Number of People" required>
+          <input type="datetime-local" [(ngModel)]="startTime" name="startTime" required>
+          <button type="submit">Create Meeting</button>
+        </form>
+      </div>
+      
+</body>
+</html>

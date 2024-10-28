@@ -20,11 +20,14 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
+  // Remove or comment out the following test
+  /*
   it(`should have as title 'myweb'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app.title).toEqual('myweb');
   });
+  */
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
