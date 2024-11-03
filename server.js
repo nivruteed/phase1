@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
+  password: 'Avira@19',
   database: 'myweb'
 });
 
@@ -26,34 +26,85 @@ db.connect(err => {
 
 // API endpoint to create a user
 app.post('/api/create-user', (req, res) => {
-  const { name, email, address, password } = req.body;
-  const query = 'INSERT INTO users (name, email, address, password) VALUES (?, ?, ?, ?)';
-  
-  db.query(query, [name, email, address, password], (err, result) => {
-    if (err) return res.status(500).send(err);
-    res.status(200).send('User created successfully!');
-  });
+    const { name, email, address, password } = req.body;
+    const query = 'INSERT INTO users (name, email, address, password) VALUES (?, ?, ?, ?)';
+
+    db.query(query, [name, email, address, password], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json({ message: 'User created successfully!' });
+    });
+});
+
+// API endpoint for user login
+app.post('/api/login', (req, res) => {
+    const { email, password } = req.body;
+    const query = 'SELECT * FROM users WHERE email = ? AND password = ?';
+
+    db.query(query, [email, password], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        if (results.length > 0) {
+            res.status(200).json({ message: 'Login successful!', user: results[0] });
+        } else {
+            res.status(401).json({ message: 'Invalid email or password' });
+        }
+    });
 });
 
 // API endpoint to schedule a meeting
 app.post('/api/schedule-meeting', (req, res) => {
-  const { topic, numberOfPeople, startTime } = req.body;
-  const query = 'INSERT INTO meetings (topic, numberOfPeople, startTime) VALUES (?, ?, ?)';
-  
-  db.query(query, [topic, numberOfPeople, startTime], (err, result) => {
-    if (err) return res.status(500).send(err);
-    res.status(200).send('Meeting scheduled successfully!');
-  });
+    const { topic, numberOfPeople, startTime, userId } = req.body;
+    const query = 'INSERT INTO meetings (topic, numberOfPeople, startTime, userId) VALUES (?, ?, ?, ?)';
+
+    db.query(query, [topic, numberOfPeople, startTime, userId], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json({ message: 'Meeting scheduled successfully!' });
+    });
+});
+
+// API endpoint to fetch all meetings
+app.get('/api/meetings', (req, res) => {
+    const query = 'SELECT * FROM meetings';
+    db.query(query, (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json(results);
+    });
+});
+
+// API endpoint to update a meeting
+app.put('/api/meetings/:id', (req, res) => {
+    const { id } = req.params;
+    const { topic, numberOfPeople, startTime } = req.body;
+    const query = 'UPDATE meetings SET topic = ?, numberOfPeople = ?, startTime = ? WHERE id = ?';
+
+    db.query(query, [topic, numberOfPeople, startTime, id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json({ message: 'Meeting updated successfully!' });
+    });
+});
+
+// API endpoint to delete a meeting
+app.delete('/api/meetings/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM meetings WHERE id = ?';
+
+    db.query(query, [id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json({ message: 'Meeting deleted successfully!' });
+    });
 });
 
 // Serve static files from Angular app
-app.use(express.static('dist/your-angular-app-name'));
+app.use(express.static('dist/myweb'));
 
 app.get('*', (req, res) => {
-  res.sendFile(__dirname + '/dist/your-angular-app-name/index.html');
+    res.sendFile(__dirname + '/dist/myweb/index.html');
 });
 
 // Start server
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+    console.log(`Server running on http://localhost:${port}`);
 });

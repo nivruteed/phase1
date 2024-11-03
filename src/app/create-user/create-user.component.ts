@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ApiService } from '../api.service';
+import { ApiService } from '../api.service'; // Adjust the path as needed
 
 @Component({
   selector: 'app-create-user',
@@ -16,12 +16,31 @@ export class CreateUserComponent {
   constructor(private api: ApiService) {}
 
   createUser() {
-    if (this.password === this.repeatPassword) {
-      this.api.createUser({ username: this.email, password: this.password }).subscribe(response => {
-        console.log(response);
-      });
-    } else {
-      alert("Passwords do not match!");
+    if (this.password !== this.repeatPassword) {
+        alert("Passwords do not match!");
+        return;
     }
-  }
+
+    const userData = {
+        name: this.name,
+        email: this.email,
+        address: this.address,
+        password: this.password
+    };
+
+    console.log('Sending user data:', userData); // Debugging line
+
+    this.api.createUser(userData).subscribe(
+        response => {
+            console.log('Server response:', response);
+            alert('User created successfully!');
+            // Reset the form or navigate as needed
+        },
+        error => {
+            console.error('Error from server:', error);
+            alert('Error creating user: ' + (error.error?.message || 'Unknown error'));
+        }
+    );
+}
+
 }
